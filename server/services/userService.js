@@ -71,26 +71,19 @@ module.exports.loginUser = async serviceData => {
   }
 }
 
-module.exports.updateUserProfile = async serviceData => {
-  try {
-    const jwtToken = serviceData.headers.authorization.split('Bearer')[1].trim()
-    const decodedJwtToken = jwt.decode(jwtToken)
-    const user = await User.findOneAndUpdate(
-      { _id: decodedJwtToken.id },
-      {
-        firstName: serviceData.body.firstName,
-        lastName: serviceData.body.lastName
-      },
-      { new: true }
-    )
+module.exports.updateUserProfile = async (req) => {
+  const { firstName, lastName } = req.body
+  const userId = req.user.id
 
-    if (!user) {
-      throw new Error('User not found!')
-    }
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { firstName, lastName },
+    { new: true }
+  )
 
-    return user.toObject()
-  } catch (error) {
-    console.error('Error in userService.js', error)
-    throw new Error(error)
+  if (!updatedUser) {
+    throw new Error('User not found')
   }
+
+  return updatedUser.toObject()
 }

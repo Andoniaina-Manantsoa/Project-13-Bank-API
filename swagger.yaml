@@ -12,6 +12,44 @@ schemes:
 
 paths:
   /user/login:
+    put:
+    tags:
+      - User
+    summary: Update user profile
+    description: Update first name and last name of the authenticated user
+    parameters:
+      - in: header
+        name: Authorization
+        required: true
+        type: string
+        description: Bearer JWT token
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+    responses:
+      '200':
+        description: User profile updated successfully
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+            email:
+              type: string
+            firstName:
+              type: string
+            lastName:
+              type: string
+      '401':
+        description: Unauthorized
+        
     post:
       tags:
         - User Module
